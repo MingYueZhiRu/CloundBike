@@ -11,9 +11,9 @@ const query = defineProps<{
 const orderTabs = ref([
   { orderState: 0, title: '全部', isRender: false },
   { orderState: 1, title: '待付款', isRender: false },
-  { orderState: 2, title: '待发货', isRender: false },
-  { orderState: 3, title: '待收货', isRender: false },
-  { orderState: 4, title: '待评价', isRender: false },
+  { orderState: 2, title: '待提车', isRender: false },
+  { orderState: 3, title: '租赁中', isRender: false },
+  { orderState: 4, title: '已完成', isRender: false },
 ])
 
 // 高亮下标
@@ -24,6 +24,9 @@ orderTabs.value[activeIndex.value].isRender = true
 
 <template>
   <view class="viewport">
+    <view class="search">
+
+    </view>
     <!-- tabs -->
     <view class="tabs">
       <text
@@ -66,22 +69,38 @@ page {
   background-color: #fff;
 }
 
+.viewport::before{
+  content:"";
+  position: absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:34%;
+  background: linear-gradient(to bottom, rgba(189, 17, 78,0.8), rgba(255, 255, 255, 0));
+  z-index:1;
+  pointer-events: none;
+}
+
+
 // tabs
 .tabs {
   display: flex;
   justify-content: space-around;
   line-height: 60rpx;
   margin: 0 10rpx;
-  background-color: #fff;
-  box-shadow: 0 4rpx 6rpx rgba(240, 240, 240, 0.6);
   position: relative;
   z-index: 9;
 
   .item {
     flex: 1;
     text-align: center;
-    padding: 20rpx;
-    font-size: 28rpx;
+    padding: 10rpx;
+    font-size: 25rpx;
+    font-weight: bold;
+    color: #999;
+    border-bottom: 2px solid #fff;
+    transition: all 0.4s;
+  }
     color: #262626;
   }
 
@@ -92,7 +111,7 @@ page {
     width: 20%;
     height: 6rpx;
     padding: 0 50rpx;
-    background-color: #27ba9b;
+    background-color: #cd4d79;
     /* 过渡效果 */
     transition: all 0.4s;
   }

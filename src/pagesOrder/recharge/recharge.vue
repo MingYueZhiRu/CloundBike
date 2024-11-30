@@ -5,17 +5,18 @@ import type { TireCoin } from '@/types/tireCoin'
 import { useMemberStore } from '@/stores'
 import { onShow } from '@dcloudio/uni-app'
 import { getMemberTireCoinAPI } from '@/services/recharge'
-// 获取屏幕边界到安全区域距离
-const { safeAreaInsets } = uni.getSystemInfoSync()
 
 const tireCoinList = [
-  { type: '1', text: '66', price: '6.00',icon:'/public/logo.png' },
-  { type: '2', text: '180', price: '16.00' },
-  { type: '3', text: '777', price: '64.80' },
-  { type: '4', text: '200', price: '168.00' },
-  { type: '5', text: '360', price: '300.00' },
-  { type: '6', text: '798', price: '648.00' },
+  { type: '1', text: '66', price: '6.00', selected: false },
+  { type: '2', text: '180', price: '16.00', selected: false },
+  { type: '3', text: '777', price: '64.80', selected: false },
+  { type: '4', text: '200', price: '168.00', selected: false },
+  { type: '5', text: '360', price: '300.00', selected: false },
+  { type: '6', text: '798', price: '648.00', selected: false },
 ]
+
+//当前选中的价格
+const selectedPrice = ref<string | null>(null)
 
 const memberStore = useMemberStore()
 const balance = ref(0)
@@ -33,9 +34,14 @@ onShow(() => {
 })
 
 // 修改选中状态
-const onChangeSelected = (item: TireCoin) => {
-  // 前端数据更新-是否选中取反
-  item.selected = !item.selected
+const onChangeSelected = (item: any) => {
+  // 遍历方案列表，更新选中状态
+  tireCoinList.forEach((coin) => {
+    coin.selected = false
+  })
+
+  item.selected = true
+  selectedPrice.value = item.price
 }
 </script>
 
@@ -50,20 +56,27 @@ const onChangeSelected = (item: TireCoin) => {
     </view>
 
     <view class="content">
-      <view class="select"
-            v-for="item in tireCoinList"
-            :key="item.type"
-            hover-class="none">
+      <view
+        class="select"
+        :class="{ selected: item.selected }"
+        v-for="item in tireCoinList"
+        :key="item.type"
+        hover-class="none"
+        @click="onChangeSelected(item)"
+      >
         <image src="@/assets/tireCoin.png" class="image2"></image>
         <text class="coin-number">x{{ item.text }}</text>
         <view class="bottom"> ¥{{ item.price }} </view>
       </view>
+      <text v-if="selectedPrice" class="selectedprice">选中的价格: ¥{{ selectedPrice }}</text>
       <text class="mention">
         请仔细检查并确认充值信息，因用户个人疏忽导致的充值错误，需由用户自行承担。一旦完成充值，概不退换。
       </text>
     </view>
     <view class="certain">
-      <text style="margin:20rpx;">确认付款</text>
+      <navigator class="navigator" :url="'./rechargeSuccess?price=' + selectedPrice" hover-class="none">
+        确认付款
+      </navigator>
     </view>
   </view>
 </template>
@@ -135,7 +148,7 @@ page {
     justify-content: center;
     align-items: center;
     font-size: 30rpx;
-    border-radius:0 0 15rpx 15rpx;
+    border-radius: 0 0 15rpx 15rpx;
     font-weight: bold;
     color: #ffffff;
   }
@@ -144,31 +157,48 @@ page {
     color: #dc4f7e;
     font-weight: bold;
   }
-  .mention{
-    margin-top:20rpx;
-    font-size:25rpx;
-    padding:10rpx 10rpx 10rpx 20rpx;
-    color:#7f7f7f;
-    font-weight:bold;
+  .mention {
+    margin-top: 20rpx;
+    font-size: 25rpx;
+    padding: 10rpx 10rpx 10rpx 20rpx;
+    color: #7f7f7f;
+    font-weight: bold;
+  }
+  .checkmark {
+    position: relative;
+    top: 10rpx;
+    right: 10rpx;
+    font-size: 24rpx;
+    color: #00c853;
   }
 }
-.image2{
-  width:150rpx;
-  height:180rpx;
-  padding-top:20rpx;
+.image2 {
+  width: 150rpx;
+  height: 180rpx;
+  padding-top: 20rpx;
 }
 
-.certain{
+.certain {
   border-radius: 40rpx;
-  margin:450rpx 14.5%;
-  font-size:30rpx;
-  display:flex;
+  margin: 370rpx 14.5%;
+  font-size: 30rpx;
+  display: flex;
   color: #ffffff;
   justify-content: center;
   align-items: center;
   background: radial-gradient(circle 800rpx at center, #dc4f7e, #ff7f00);
-  font-weight:bold;
-  width:70%;
+  font-weight: bold;
+  width: 70%;
+  .navigator {
+    margin: 20rpx;
+  }
+}
 
+.selectedprice{
+  margin-top: 20rpx;
+  font-size: 25rpx;
+  padding: 10rpx 10rpx 10rpx 20rpx;
+  color: #000000;
+  font-weight: bold;
 }
 </style>

@@ -72,7 +72,7 @@ const test = ref(0);
           <span class="number">{{ transactionNumber }}</span>
           <span class="text">消费次数</span>
         </navigator>
-        <navigator class="navigator">
+        <navigator class="navigator" url="/pagesMember/myRiding/myRiding">
           <span class="number">{{ myRiding }}</span>
           <span class="text">我的骑行</span>
         </navigator>

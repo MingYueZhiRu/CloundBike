@@ -9,7 +9,7 @@ import { getMemberTireCoinAPI } from '@/services/recharge'
 const tireCoinList = [
   { type: '1', text: '66', price: '6.00', selected: false },
   { type: '2', text: '180', price: '16.00', selected: false },
-  { type: '3', text: '777', price: '64.80', selected: false },
+  { type: '3', text: '200', price: '64.80', selected: false },
   { type: '4', text: '200', price: '168.00', selected: false },
   { type: '5', text: '360', price: '300.00', selected: false },
   { type: '6', text: '798', price: '648.00', selected: false },
@@ -64,7 +64,7 @@ const onChangeSelected = (item: any) => {
         hover-class="none"
         @click="onChangeSelected(item)"
       >
-        <image src="@/assets/tireCoin.png" class="image2"></image>
+        <image src="@/static/img/tireCoin.png" class="image2"></image>
         <text class="coin-number">x{{ item.text }}</text>
         <view class="bottom"> ¥{{ item.price }} </view>
       </view>

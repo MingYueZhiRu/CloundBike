@@ -143,7 +143,13 @@
 					"style": {
 						"navigationBarTitleText": "我的骑行"
 					}
-				}
+				},
+        {
+          "path": "launchGroup/launchGroup",
+          "style": {
+            "navigationBarTitleText": "发起骑行"
+          }
+        }
 			]
 		},
 		{
@@ -184,6 +190,12 @@
 					"path": "recharge/rechargeSuccess",
 					"style": {
 						"navigationBarTitleText": "充值成功"
+					}
+				},
+				{
+					"path": "bikegroup/bikegroup",
+					"style": {
+						"navigationBarTitleText": "骑行团"
 					}
 				}
 			]

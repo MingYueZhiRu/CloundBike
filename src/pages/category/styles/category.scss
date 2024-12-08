@@ -10,13 +10,16 @@ page {
 .search {
   padding: 20rpx 30rpx;
   background-color: #fff;
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
   .input {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 64rpx;
     padding-left: 26rpx;
-    color: #8b8b8b;
+    color: #343434;
     font-size: 28rpx;
     border-radius: 32rpx;
     background-color: #f3f4f4;

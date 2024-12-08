@@ -46,8 +46,8 @@ orderTabs.value[activeIndex.value].isRender = true
       <view class="cursor" :style="{ left: activeIndex * 20 + '%' }"></view>
     </view>
     <!-- 滑动容器 -->
-    <swiper class="swiper" :current="activeIndex" @change="activeIndex = $event.detail.current">
-      <!-- 滑动项 -->
+    <swiper class="swiper" :currentnpm="activeIndex" @change="activeIndex = $event.detail.current">
+      <!-- 滑动项 --> ru
       <swiper-item v-for="item in orderTabs" :key="item.title">
         <!-- 订单列表 -->
         <OrderList v-if="item.isRender" :order-state="item.orderState" />
@@ -100,7 +100,6 @@ page {
     color: #999;
     border-bottom: 2px solid #fff;
     transition: all 0.4s;
-  }
     color: #262626;
   }
 

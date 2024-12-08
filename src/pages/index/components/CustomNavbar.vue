@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import '@/static/font.css'
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 </script>
@@ -7,13 +8,11 @@ const { safeAreaInsets } = uni.getSystemInfoSync()
   <view class="navbar" :style="{ paddingTop: safeAreaInsets!.top + 10 + 'px' }">
     <!-- logo文字 -->
     <view class="logo">
-      <!-- //<image class="logo-image" src="@/static/images/logo.png"></image> -->
-      <text class="logo-text">新鲜 · 亲民 · 快捷</text>
+      <text class="logo-text">云百客</text>
     </view>
     <!-- 搜索条 -->
     <view class="search">
-      <text class="icon-search">搜索商品</text>
-      <text class="icon-scan"></text>
+      <text class="icon-search">请输入内容查找</text>
     </view>
   </view>
 </template>
@@ -21,35 +20,32 @@ const { safeAreaInsets } = uni.getSystemInfoSync()
 <style lang="scss">
 /* 自定义导航条 */
 .navbar {
-  background-image: url(@/static/images/navigator_bg.png);
+  background-image: url(@/static/img/indexBackImage.jpg);
   background-size: cover;
+  background-position: center;
   position: relative;
   display: flex;
   flex-direction: column;
   padding-top: 20px;
+  height:550rpx;
   .logo {
     display: flex;
     align-items: center;
     height: 64rpx;
-    padding-left: 30rpx;
-    .logo-image {
-      width: 166rpx;
-      height: 39rpx;
-    }
+    padding-left: 15rpx;
     .logo-text {
+      font-family: 'AaYuanWeiTusi';
+      font-weight: bold;
+      font-size:50rpx;
       flex: 1;
-      line-height: 28rpx;
       color: #fff;
-      margin: 2rpx 0 0 20rpx;
-      padding-left: 20rpx;
-      border-left: 1rpx solid #fff;
-      font-size: 26rpx;
+      margin: 0 0 0 20rpx;
     }
   }
   .search {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 0 10rpx 0 26rpx;
     height: 64rpx;
     margin: 16rpx 20rpx;
@@ -59,13 +55,10 @@ const { safeAreaInsets } = uni.getSystemInfoSync()
     background-color: rgba(255, 255, 255, 0.5);
   }
   .icon-search {
+    color: #646363;
     &::before {
       margin-right: 10rpx;
     }
-  }
-  .icon-scan {
-    font-size: 30rpx;
-    padding: 15rpx;
   }
 }
 </style>

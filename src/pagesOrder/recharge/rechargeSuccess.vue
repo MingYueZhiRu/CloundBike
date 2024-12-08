@@ -20,7 +20,7 @@ const goToMyPage = () => {
 <template>
   <view class="content">
     <view class="price">¥{{ price }}</view>
-    <image src="@/assets/rechargeSuccess.png" class="image"></image>
+    <image src="@/static/img/rechargeSuccess.png" class="image"></image>
     <button class="certain" @click="goToMyPage">
       <text style="padding-left:150rpx;">支付成功</text>
     </button>

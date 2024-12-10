@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
-import {UniHelper} from '@uni-helper/uni-app-types'
 
 // 表单数据
 const form = ref({
@@ -10,6 +9,7 @@ const form = ref({
   time: '', //开始时间
   number: '', //活动人数
   description: '', //活动描述
+
 })
 
 //定义校验规则
@@ -64,6 +64,8 @@ const commit = async () => {
     uni.showToast({ icon: 'error', title: '请填写完整信息' })
   }
 }
+
+//api 接口
 </script>
 
 <template>
@@ -86,6 +88,10 @@ const commit = async () => {
         <textarea class="input description" placeholder="描述一下活动" v-model="form.description" />
       </uni-forms-item>
     </uni-forms>
+  </view>
+
+  <view class="commit-images">
+
   </view>
   <!-- 提交按钮 -->
   <view class="commit">

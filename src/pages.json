@@ -24,8 +24,8 @@
 		{
 			"path": "pages/category/category",
 			"style": {
-				"navigationBarTitleText": "商品分类"
-			}
+        "navigationStyle": "custom"
+      }
 		},
 		{
 			"path": "pages/cart/cart",
@@ -62,7 +62,7 @@
 		{
 			"path": "pages/goods/goods",
 			"style": {
-				"navigationBarTitleText": "商品详情"
+				"navigationStyle": "custom"
 			}
 		}
 	],
@@ -197,7 +197,13 @@
 					"style": {
 						"navigationBarTitleText": "骑行团"
 					}
-				}
+				},
+        {
+          "path": "bikegroup/groupDetail",
+          "style": {
+            "navigationBarTitleText": "活动详情"
+          }
+        }
 			]
 		}
 	],

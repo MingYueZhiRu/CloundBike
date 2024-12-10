@@ -1,13 +1,19 @@
 <script setup lang="ts">
+const toRent = () => {
+  uni.switchTab({
+    url: '/pages/category/category',
+  })
+}
+
 </script>
 
 <template>
   <view class="option">
     <!--租赁-->
-    <navigator class="rent">
+    <view class="rent" @tap="toRent">
       <image class="rentImage" src="@/static/img/rent.jpg"></image>
       <text class="renttext">购买租赁</text>
-    </navigator>
+    </view>
     <!--骑行团-->
     <navigator class="join" url="/pagesOrder/bikegroup/bikegroup">
       <image class="joinImage" src="@/static/img/join.png"></image>

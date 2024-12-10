@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import '@/static/font.css'
+
+// api接口
+
+//模拟数据部分
 const groups = [
   {
-    type: '1',
+    id: '1',
     title: '深圳湾骑行',
     groupImage: '/static/test/test.jpg',
     signup: '10',
@@ -11,7 +15,7 @@ const groups = [
     userImage: '/static/img/join.png',
   },
   {
-    type: '2',
+    id: '2',
     title: '深圳湾骑行',
     groupImage: '/static/test/test.jpg',
     signup: '10',
@@ -20,7 +24,7 @@ const groups = [
     userImage: '/static/img/join.png',
   },
   {
-    type: '3',
+    id: '3',
     title: '深圳湾骑行',
     groupImage: '/static/test/test.jpg',
     signup: '10',
@@ -29,7 +33,7 @@ const groups = [
     userImage: '/static/img/join.png',
   },
   {
-    type: '4',
+    id: '4',
     title: '深圳湾骑行',
     groupImage: '/static/test/test.jpg',
     signup: '10',
@@ -38,7 +42,7 @@ const groups = [
     userImage: '/static/img/join.png',
   },
   {
-    type: '5',
+    id: '5',
     title: '深圳湾骑行',
     groupImage: '/static/test/test.jpg',
     signup: '10',
@@ -47,7 +51,7 @@ const groups = [
     userImage: '/static/img/join.png',
   },
   {
-    type: '6',
+    id: '6',
     title: '深圳湾骑行',
     groupImage: '/static/test/test.jpg',
     signup: '10',
@@ -56,7 +60,7 @@ const groups = [
     userImage: '/static/img/join.png',
   },
   {
-    type: '7',
+    id: '7',
     title: '深圳湾骑行',
     groupImage: '/static/test/test.jpg',
     signup: '10',
@@ -65,7 +69,7 @@ const groups = [
     userImage: '/static/img/join.png',
   },
   {
-    type: '8',
+    id: '8',
     title: '深圳湾骑行',
     groupImage: '/static/test/test.jpg',
     signup: '10',
@@ -98,12 +102,14 @@ const groups = [
   <!-- 骑行团列表 -->
   <scroll-view class="scroll-view" scroll-y>
     <view class="list">
-      <navigator class="list-content"
-                 v-for="item in groups"
-                 hover-class="none"
-                 :key="item.type"
+      <navigator
+        class="list-content"
+        v-for="item in groups"
+        hover-class="none"
+        :key="item.id"
+        url="/pagesOrder/bikegroup/groupDetail?id={{item.id}}"
       >
-        <view class="content" :style="{ backgroundImage : 'url('+item.groupImage+')'}">
+        <view class="content" :style="{ backgroundImage: 'url(' + item.groupImage + ')' }">
           <text class="content-top">
             <text class="title">{{ item.title }}</text>
             <text class="signup">{{ item.signup }}人报名</text>
@@ -190,7 +196,7 @@ page {
   }
 }
 
-.list{
+.list {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -198,57 +204,57 @@ page {
   padding: 5rpx;
   align-items: center;
   justify-content: center;
-  .list-content{
+  .list-content {
     display: flex;
     flex-direction: column;
   }
-  .content{
+  .content {
     display: flex;
     flex-direction: column;
-    padding:10rpx;
+    padding: 10rpx;
     border: 2rpx solid #afaeae;
     border-radius: 20rpx;
     height: 400rpx;
     width: 320rpx;
     margin: 10rpx;
     background-position: top center;
-    background-size:100% 60%;
+    background-size: 100% 60%;
     background-repeat: no-repeat;
   }
 
-  .content-top{
-    display: flex ;
+  .content-top {
+    display: flex;
     flex-direction: row;
-    margin:78% 0 3% 0;
-    .title{
+    margin: 78% 0 3% 0;
+    .title {
       font-size: 28rpx;
       font-weight: bold;
-      color:#000;
+      color: #000;
       margin-right: 70rpx;
     }
-    .signup{
-      font-size:22rpx;
+    .signup {
+      font-size: 22rpx;
       color: #7f7f7f;
     }
   }
-  .time{
-    font-size:22rpx;
+  .time {
+    font-size: 22rpx;
     color: #7f7f7f;
     margin-bottom: 20rpx;
   }
-  .user{
+  .user {
     display: flex;
     flex-direction: row;
     align-items: center;
-    .userImage{
+    .userImage {
       width: 60rpx;
       height: 60rpx;
       border-radius: 100%;
     }
-    .username{
-      font-size:22rpx;
+    .username {
+      font-size: 22rpx;
       color: #7f7f7f;
-      margin-left:20rpx;
+      margin-left: 20rpx;
     }
   }
 }
@@ -269,5 +275,4 @@ page {
     font-weight: bold;
   }
 }
-
 </style>

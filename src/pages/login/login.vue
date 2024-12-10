@@ -1,31 +1,45 @@
 <script setup lang="ts">
-import { postLoginAPI, postLoginWxMinAPI, postLoginWxMinSimpleAPI } from '@/services/login'
+import { postLoginWxMinAPI } from '@/services/login'
 import { useMemberStore } from '@/stores'
 import type { LoginResult } from '@/types/member'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
+import {http} from "@/utils/http";
 
 // #ifdef MP-WEIXIN
 // 获取 code 登录凭证
 let code = ''
-onLoad(async () => {
-  const res = await wx.login()
-  code = res.code
+const getCode = (async () => {
+  wx.login({
+    success: function (res) {
+      code = res.code;
+      if (code) {
+        console.log('获取用户登录凭证：' + code);
+      } else {
+        console.log('获取用户登录态失败：' + res.errMsg);
+      }
+    }
+  });
 })
 
 // 获取用户手机号码
 const onGetphonenumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
   const { encryptedData, iv } = ev.detail
-  const res = await postLoginWxMinAPI({ code, encryptedData, iv })
-  loginSuccess(res.result)
+  if (!code) {
+    uni.showToast({ icon: 'error', title: '登录失败，请重试' })
+    return
+  }
+  try {
+    const res = await postLoginWxMinAPI({ code, encryptedData, iv })
+    console.log(res.result)
+    loginSuccess(res.result)
+
+  } catch (error) {
+    console.error('登录失败:', error)
+    uni.showToast({ icon: 'error', title: '登录失败，请重试' })
+  }
 }
 // #endif
-
-// 模拟手机号码快捷登录（开发练习）
-const onGetphonenumberSimple = async () => {
-  const res = await postLoginWxMinSimpleAPI('13123456789')
-  loginSuccess(res.result)
-}
 
 const loginSuccess = (profile: LoginResult) => {
   // 保存会员信息
@@ -39,20 +53,6 @@ const loginSuccess = (profile: LoginResult) => {
     //uni.navigateBack()
   }, 500)
 }
-
-// #ifdef H5
-// 传统表单登录，测试账号：13123456789 密码：123456，测试账号仅开发学习使用。
-const form = ref({
-  account: '13123456789',
-  password: '',
-})
-
-// 表单提交
-const onSubmit = async () => {
-  const res = await postLoginAPI(form.value)
-  loginSuccess(res.result)
-}
-// #endif
 </script>
 
 <template>
@@ -61,16 +61,9 @@ const onSubmit = async () => {
      <image src="/public/logo.png"></image>
     </view>
     <view class="login">
-      <!-- 网页端表单登录 -->
-      <!-- #ifdef H5 -->
-      <input v-model="form.account" class="input" type="text" placeholder="请输入用户名/手机号码" />
-      <input v-model="form.password" class="input" type="text" password placeholder="请输入密码" />
-      <button @tap="onSubmit" class="button phone">登录</button>
-      <!-- #endif -->
-
       <!-- 小程序端授权登录 -->
       <!-- #ifdef MP-WEIXIN -->
-      <button class="button phone" open-type="getPhoneNumber" @getphonenumber="onGetphonenumber">
+      <button class="button phone" open-type="getPhoneNumber" @getphonenumber="onGetphonenumber" @tap="getCode">
         <text class="icon icon-phone"></text>
         微信登录
       </button>

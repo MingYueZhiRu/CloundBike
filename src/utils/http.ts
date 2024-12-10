@@ -12,7 +12,7 @@
 
 import { useMemberStore } from '@/stores'
 
-//const baseURL = 'https://api.it120.cc/hmy123456'
+const baseURL = 'https://553f64f.r15.cpolar.top'
 
 // 添加拦截器
 const httpInterceptor = {
@@ -89,7 +89,7 @@ export const http = <T>(options: UniApp.RequestOptions) => {
       fail(err) {
         uni.showToast({
           icon: 'none',
-          title: '网络错误，换个网络试试',
+          title: err.errMsg,
         })
         reject(err)
       },

@@ -1,20 +1,17 @@
+import type { LoginResult } from '@/types/member'
+import { http } from '@/utils/http'
+
+type LoginWxMinParams = {
+  code: string
+}
+/**
+ * 小程序登录
+ * @param data 请求参数
+ */
 export const postLoginWxMinAPI = (data: LoginWxMinParams) => {
-  return Promise.resolve({
-    name: "测试用户",
-    token: "mock_token",
-  } as LoginResult);
-};
-
-export const postLoginWxMinSimpleAPI = (phoneNumber: string) => {
-  return Promise.resolve({
-    name: "模拟用户",
-    token: "mock_token_simple",
-  } as LoginResult);
-};
-
-export const postLoginAPI = (data: LoginParams) => {
-  return Promise.resolve({
-    name: "传统登录用户",
-    token: "mock_token_traditional",
-  } as LoginResult);
-};
+  return http<LoginResult>({
+    method: 'POST',
+    url: '/user/user/login',
+    data,
+  })
+}

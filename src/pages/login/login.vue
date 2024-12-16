@@ -1,87 +1,80 @@
 <script setup lang="ts">
-import { postLoginAPI, postLoginWxMinAPI, postLoginWxMinSimpleAPI } from '@/services/login'
+import { postLoginWxMinAPI } from '@/services/login'
 import { useMemberStore } from '@/stores'
 import type { LoginResult } from '@/types/member'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 
-// #ifdef MP-WEIXIN
-// 获取 code 登录凭证
-let code = ''
+const memberStore = useMemberStore()
+let code = '' // 存储微信登录凭证
+
+// 获取 code
 onLoad(async () => {
-  const res = await wx.login()
-  code = res.code
+  try {
+    const res = await wx.login()
+    code = res.code
+    console.log('获取登录凭证 code:', code)
+  } catch (error) {
+    uni.showToast({ icon: 'none', title: '获取登录凭证失败' })
+  }
 })
 
-// 获取用户手机号码
-const onGetphonenumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
-  const { encryptedData, iv } = ev.detail
-  const res = await postLoginWxMinAPI({ code, encryptedData, iv })
-  loginSuccess(res.result)
-}
-// #endif
+// 处理微信登录（弹出授权窗口）
+const handleWxLogin = async () => {
+  if (!code) {
+    uni.showToast({ icon: 'none', title: '登录凭证失效，请重新进入' })
+    return
+  }
 
-// 模拟手机号码快捷登录（开发练习）
-const onGetphonenumberSimple = async () => {
-  const res = await postLoginWxMinSimpleAPI('13123456789')
-  loginSuccess(res.result)
-}
+  // 获取用户头像和昵称
+  try {
+    const profileRes = await wx.getUserProfile({
+      desc: '我需要头像和昵称来完善你的资料', // 必填，弹窗展示用途说明
+    })
+    console.log('用户信息6666:', profileRes.userInfo)
 
-const loginSuccess = (profile: LoginResult) => {
-  // 保存会员信息
-  const memberStore = useMemberStore()
-  memberStore.setProfile(profile)
-  // 成功提示
-  uni.showToast({ icon: 'success', title: '登录成功' })
-  setTimeout(() => {
-    // 页面跳转
-    // uni.switchTab({ url: '/pages/my/my' })
-    uni.navigateBack()
-  }, 500)
-}
+    // 登录请求，携带 code 和用户信息
+    const result = await postLoginWxMinAPI({
+      code,
+      ...profileRes.userInfo, // 可传用户信息到后台
+    })
+    console.log('后端返回结果:', result)
 
-// #ifdef H5
-// 传统表单登录，测试账号：13123456789 密码：123456，测试账号仅开发学习使用。
-const form = ref({
-  account: '13123456789',
-  password: '',
-})
-
-// 表单提交
-const onSubmit = async () => {
-  const res = await postLoginAPI(form.value)
-  loginSuccess(res.result)
+    if (result && result.code === 1) {
+      const userData = result.data
+      memberStore.setProfile(userData) // 保存用户信息
+      uni.showToast({ icon: 'success', title: '登录成功' })
+      setTimeout(() => {
+        uni.navigateBack()
+      }, 500)
+    } else {
+      uni.showToast({ icon: 'none', title: result.msg || '登录失败' })
+    }
+  } catch (error) {
+    console.error('授权或登录失败:', error)
+    uni.showToast({ icon: 'none', title: '授权失败，请重试' })
+  }
 }
-// #endif
 </script>
 
 <template>
   <view class="viewport">
     <view class="logo">
-     <image src="/public/logo.png"></image>
+      <image src="/public/logo.png"></image>
     </view>
     <view class="login">
-      <!-- 网页端表单登录 -->
-      <!-- #ifdef H5 -->
-      <input v-model="form.account" class="input" type="text" placeholder="请输入用户名/手机号码" />
-      <input v-model="form.password" class="input" type="text" password placeholder="请输入密码" />
-      <button @tap="onSubmit" class="button phone">登录</button>
-      <!-- #endif -->
-
-      <!-- 小程序端授权登录 -->
-      <!-- #ifdef MP-WEIXIN -->
-      <button class="button phone" open-type="getPhoneNumber" @getphonenumber="onGetphonenumber">
+      <!-- 微信登录按钮 -->
+      <button class="button phone" @click="handleWxLogin">
         <text class="icon icon-phone"></text>
         微信登录
       </button>
-      <!-- #endif -->
-      <view class="tips">登录/注册即视为你同意《服务条款》和《深大云百客隐私协议》</view>
+      <view class="tips"> 登录/注册即视为你同意《服务条款》和《深大云百客隐私协议》 </view>
     </view>
   </view>
 </template>
 
-<style lang="scss">
-page {
+<style lang="scss" scoped>
+.page {
   height: 100%;
   background-color: rgb(253, 242, 247);
 }
@@ -109,16 +102,6 @@ page {
   height: 60vh;
   padding: 40rpx 20rpx 20rpx;
 
-  .input {
-    width: 100%;
-    height: 80rpx;
-    font-size: 28rpx;
-    border-radius: 72rpx;
-    border: 1px solid #ddd;
-    padding-left: 30rpx;
-    margin-bottom: 20rpx;
-  }
-
   .button {
     display: flex;
     align-items: center;
@@ -128,76 +111,7 @@ page {
     font-size: 28rpx;
     border-radius: 72rpx;
     color: #fff;
-    .icon {
-      font-size: 40rpx;
-      margin-right: 6rpx;
-    }
-  }
-
-  .phone {
     background-color: rgb(81, 168, 68);
-  }
-
-  .wechat {
-    background-color: #06c05f;
-  }
-
-  .extra {
-    flex: 1;
-    padding: 70rpx 70rpx 0;
-    .caption {
-      width: 440rpx;
-      line-height: 1;
-      border-top: 1rpx solid #ddd;
-      font-size: 26rpx;
-      color: #999;
-      position: relative;
-      text {
-        transform: translate(-40%);
-        background-color: #fff;
-        position: absolute;
-        top: -12rpx;
-        left: 50%;
-      }
-    }
-
-    .options {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 70rpx;
-      button {
-        padding: 0;
-        background-color: transparent;
-        &::after {
-          border: none;
-        }
-      }
-    }
-
-    .icon {
-      font-size: 24rpx;
-      color: #444;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      &::before {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 80rpx;
-        height: 80rpx;
-        margin-bottom: 6rpx;
-        font-size: 40rpx;
-        border: 1rpx solid #444;
-        border-radius: 50%;
-      }
-    }
-    .icon-weixin::before {
-      border-color: #06c05f;
-      color: #06c05f;
-    }
   }
 }
 

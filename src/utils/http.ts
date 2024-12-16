@@ -12,7 +12,7 @@
 
 import { useMemberStore } from '@/stores'
 
-//const baseURL = 'https://api.it120.cc/hmy123456'
+const baseURL = 'http://4a6c3f85.r15.cpolar.top'
 
 // 添加拦截器
 const httpInterceptor = {

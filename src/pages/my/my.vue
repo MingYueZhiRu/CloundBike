@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { useGuessList } from '@/composables'
-import {ref} from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useMemberStore } from '@/stores'
+
 // 获取屏幕边界到安全区域距离
-const { safeAreaInsets } = uni.getSystemInfoSync()
+const { safeAreaInsets } = uni.getSystemInfoSync();
 // 我的订单
 const orderTypes = [
   { type: '1', text: '待支付', icon: 'icon-currency' },
   { type: '2', text: '待提车', icon: 'icon-gift' },
   { type: '3', text: '退换货', icon: 'icon-check' },
-]
+];
 // 获取会员信息
-const memberStore = useMemberStore()
-
-//获取用户轮胎币、消费次数、我的骑行、发布骑行次数
+// const memberStore = useMemberStore()
+// const naviagteToLogin = () => {
+//   handleNavigateWithToken('/pages/login/login')
+// }户轮胎币、消费次数、我的骑行、发布骑行次数
 const tireCoin = ref(0);
 const transactionNumber = ref(0);
 const myRiding = ref(0);
@@ -22,6 +24,18 @@ const releaseNumber = ref(0);
 const { guessRef, onScrolltolower } = useGuessList()
 
 const test = ref(0);
+// 用户信息相关的响应式变量
+const userInfo = reactive({
+  avatarUrl: '',
+  nickName: '',
+})
+const hasUserInfo = ref(false)
+// 点击获取用户信息
+// 
+const memberStore = useMemberStore()
+// const naviagteToLogin = () => {
+//   handleNavigateWithToken('/pages/login/index')
+// }
 </script>
 
 <template>
@@ -29,103 +43,106 @@ const test = ref(0);
     <!-- 个人资料 -->
     <view class="profile" :style="{ paddingTop: safeAreaInsets!.top + 'px' }">
       <!-- 情况1：已登录 -->
-      <view class="overview" v-if="memberStore.profile">
-        <navigator url="/pagesMember/profile/profile" hover-class="none">
-          <image class="avatar" :src="memberStore.profile.avatar" mode="aspectFill"></image>
-        </navigator>
+      <!-- <view class="overview" v-if="memberStore.profile">
+        <navigator  hover-class="none">
+          <image class="avatar" src="/static/images/icon.jpg" mode="aspectFill"></image>
+
+
+//获取用        </navigator>
         <view class="meta">
           <view class="nickname">
-            {{ memberStore.profile.nickname || memberStore.profile.account }}
-          </view>
-          <navigator class="extra" url="/pagesMember/profile/profile" hover-class="none">
-            <text class="update">更新头像昵称</text>
-          </navigator>
-        </view>
-      </view>
-      <!-- 情况2：未登录 -->
-      <view class="overview" v-else>
-        <navigator url="/pages/login/login" hover-class="none">
-          <image
-            class="avatar gray"
-            mode="aspectFill"
-            src="https://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-06/db628d42-88a7-46e7-abb8-659448c33081.png"
-          ></image>
-        </navigator>
-        <view class="meta">
-          <navigator url="/pages/login/login" hover-class="none" class="nickname">
-            未登录
-          </navigator>
-          <view class="extra">
-            <text class="tips">点击登录账号</text>
+            {{ '陆拾贰' }}
           </view>
         </view>
+      </view> -->
+      <view class="profile">
+        <!--已登录-->
+        <view class="overview" v-if="memberStore.profile">
+          <navigator url="/pages/modify-profile/index" open-type="navigate" hover-class="navigator-hover">
+            <image class="avatar" :src="memberStore.profile.avatarUrl" mode="aspectFill" />
+          </navigator>
+          <view class="meta">
+            <view class="nickname">{{ memberStore.profile.nickname }}</view>
+            <text style="font-size: 20rpx">{{ memberStore.profile.mobile }}</text>
+          </view>
+        </view>
+        <!-- 情况2：未登录 -->
+        <view class="overview" v-else>
+          <navigator url="/pages/login/login" hover-class="none">
+            <image class="avatar gray" mode="aspectFill"
+              src="https://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-06/db628d42-88a7-46e7-abb8-659448c33081.png">
+            </image>
+          </navigator>
+          <view class="meta">
+            <navigator url="/pages/login/login" hover-class="none" class="nickname">
+              未登录
+            </navigator>
+            <view class="extra">
+              <text class="tips">点击登录账号</text>
+            </view>
+          </view>
+        </view>
       </view>
-    </view>
-    <!--轮胎币、骑行信息等-->
-    <view class="information">
-      <view class="content">
-        <navigator class="navigator" url="/pagesOrder/recharge/recharge" hover-class="none">
-          <span class="number">{{ tireCoin }}</span>
-          <span class="text">轮胎币</span>
-        </navigator>
-        <navigator class="navigator">
+      <!--轮胎币、骑行信息等-->
+      <view class="information">
+        <view class="content">
+          <navigator class="navigator" url="/pagesOrder/recharge/recharge" hover-class="none">
+            <span class="number">{{ tireCoin }}</span>
+            <span class="text">轮胎币</span>
+          </navigator>
+          <!-- <navigator class="navigator">
           <span class="number">{{ transactionNumber }}</span>
           <span class="text">消费次数</span>
-        </navigator>
-        <navigator class="navigator">
-          <span class="number">{{ myRiding }}</span>
-          <span class="text">我的骑行</span>
-        </navigator>
-        <navigator class="navigator">
-          <span class="number">{{ releaseNumber }}</span>
-          <span class="text">发布骑行</span>
-        </navigator>
+        </navigator> -->
+          <navigator class="navigator">
+            <span class="number">{{ myRiding }}</span>
+            <span class="text">我的骑行</span>
+          </navigator>
+          <navigator class="navigator">
+            <span class="number">{{ releaseNumber }}</span>
+            <span class="text">发布骑行</span>
+          </navigator>
+        </view>
       </view>
-    </view>
 
-    <!-- 我的订单 -->
-    <view class="orders">
-      <view class="title">
-        <span style="font-weight: bold;margin-right:63%">我的订单</span>
-        <navigator class="navigator" url="/pagesOrder/list/list?type=0" hover-class="none">
-          全部订单<text class="icon-right"></text>
-        </navigator>
+      <!-- 我的订单 -->
+      <view class="orders">
+        <view class="title">
+          <span style="font-weight: bold;margin-right:63%">我的订单</span>
+          <navigator class="navigator" url="/pagesOrder/list/list?type=0" hover-class="none">
+            全部订单<text class="icon-right"></text>
+          </navigator>
+        </view>
+        <view class="section">
+          <!-- 订单 -->
+          <navigator v-for="item in orderTypes" :key="item.type" :class="item.icon"
+            :url="`/pagesOrder/list/list?type=${item.type}`" class="navigator" hover-class="none">
+            {{ item.text }}
+          </navigator>
+        </view>
       </view>
-      <view class="section">
-        <!-- 订单 -->
-        <navigator
-          v-for="item in orderTypes"
-          :key="item.type"
-          :class="item.icon"
-          :url="`/pagesOrder/list/list?type=${item.type}`"
-          class="navigator"
-          hover-class="none"
-        >
-          {{ item.text }}
-        </navigator>
+      <!--我的消息-->
+      <view class="message">
+        <view class="title">
+          <span style="font-weight: bold;margin-right:63%">我的消息</span>
+          <navigator class="navigator" url="" hover-class="none" style="padding-top: 5rpx;">
+            全部消息
+            <text class="icon-right"></text>
+          </navigator>
+        </view>
       </view>
-    </view>
-    <!--我的消息-->
-    <view class="message">
-      <view class="title">
-        <span style="font-weight: bold;margin-right:63%">我的消息</span>
-        <navigator class="navigator" url="" hover-class="none" style="padding-top: 5rpx;">
-          全部消息
-          <text class="icon-right"></text>
-        </navigator>
-      </view>
-    </view>
 
       <!-- 我的骑行 -->
-    <view class="riding">
-      <view class="title">
-        <span style="font-weight: bold;margin-right:63%">我的骑行</span>
-        <navigator class="navigator" url="/pagesMember/myRiding/myRiding" hover-class="none" style="padding-top: 5rpx;">
-          全部骑行
-          <text class="icon-right"></text>
-        </navigator>
+      <view class="riding">
+        <view class="title">
+          <span style="font-weight: bold;margin-right:63%">我的骑行</span>
+          <navigator class="navigator" url="/pagesMember/myRiding/myRiding" hover-class="none"
+            style="padding-top: 5rpx;">
+            全部骑行
+            <text class="icon-right"></text>
+          </navigator>
+        </view>
       </view>
-    </view>
   </scroll-view>
 </template>
 
@@ -224,6 +241,18 @@ page {
     color: #fff;
   }
 }
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  /* 让子元素纵向排列，方便后续进一步布局调整（可选，根据实际布局需求决定） */
+}
+
+.navigator {
+  margin-bottom: 10px;
+  /* 可以设置每个navigator元素之间的纵向间距，按需调整数值或者删除此行 */
+}
 .information {
   position: relative;
   z-index: 99;
@@ -243,7 +272,7 @@ page {
     flex-direction: column;
     color: #000000;
     text-align: center;
-    margin: 0 45rpx;
+    margin: 0 65rpx;
     .number{
       font-size:40rpx;
       margin-bottom:5rpx

@@ -49,6 +49,8 @@ const rules = {
 }
 // 表单组件实例
 const formRef = ref<UniHelper.UniFormsInstance>()
+// 图片数组
+const images = ref<{ url: string }[]>([])
 
 // 提交表单
 const commit = async () => {
@@ -63,6 +65,28 @@ const commit = async () => {
   } catch (err) {
     uni.showToast({ icon: 'error', title: '请填写完整信息' })
   }
+}
+
+// 上传图片
+const uploadImage = () => {
+  uni.chooseImage({
+    count: 3, // 允许选择最多3张图片
+    sizeType: ['original', 'compressed'],
+    sourceType: ['album', 'camera'],
+    success: (res) => {
+      console.log('选择图片', res.tempFilePaths);
+      // 将选中的图片添加到 images 数组中
+      if (Array.isArray(res.tempFilePaths)) {
+        res.tempFilePaths.forEach((path) => {
+          images.value.push({url: path})
+          console.log('上传成功', path)
+        })
+      }
+    },
+    fail: () => {
+      uni.showToast({ icon: 'error', title: '图片上传失败' })
+    },
+  })
 }
 
 //api 接口
@@ -91,8 +115,11 @@ const commit = async () => {
   </view>
 
   <view class="commit-images">
-
+    <view v-for="(item, index) in images" :key="index" class="image-item">
+      <image :src="item.url" class="image-preview"></image>
+    </view>
   </view>
+  <button @tap="uploadImage" class="upload-button">上传图片</button>
   <!-- 提交按钮 -->
   <view class="commit">
     <text class="commit-label">活动将由管理员审核通过后发布,活动期间请遵守骑行规则</text>
@@ -129,7 +156,7 @@ page {
   flex-direction: row;
   background: #fff;
   height: 120rpx;
-  margin: 600rpx 20rpx;
+  margin: 400rpx 20rpx;
   border-radius: 20rpx;
   border: 2rpx solid #ababab;
   .commit-label {
@@ -150,5 +177,29 @@ page {
     line-height: 60rpx;
     margin: 30rpx 15rpx 0 50rpx;
   }
+}
+.commit-images {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 20rpx 20rpx;
+}
+
+.image-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.image-preview{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100rpx;
+  height:200rpx;
+  margin: 0;
 }
 </style>

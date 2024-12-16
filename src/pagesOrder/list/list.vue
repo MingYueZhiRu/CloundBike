@@ -1,58 +1,102 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import OrderList from './components/OrderList.vue'
 
-// 获取页面参数
-const query = defineProps<{
-  type: string
-}>()
-
+const activeIndex = ref(0)
 // tabs 数据
-const orderTabs = ref([
-  { orderState: 0, title: '全部', isRender: false },
-  { orderState: 1, title: '待付款', isRender: false },
-  { orderState: 2, title: '待提车', isRender: false },
-  { orderState: 3, title: '租赁中', isRender: false },
-  { orderState: 4, title: '已完成', isRender: false },
-])
+const orderTabs = [
+  { orderState: 0, title: '待付款', isRender: false },
+  { orderState: 1, title: '待提车', isRender: false },
+  { orderState: 2, title: '租赁中', isRender: false },
+  { orderState: 3, title: '已完成', isRender: false },
+  { orderState: 4, title: '待归还', isRender: false },
+  { orderState: 5, title: '已取消', isRender: false },
+  { orderState: 6, title: '全部', isRender: false },
+]
 
-// 高亮下标
-const activeIndex = ref(orderTabs.value.findIndex((v) => v.orderState === Number(query.type)))
-// 默认渲染容器
-orderTabs.value[activeIndex.value].isRender = true
+// 模拟数据
+const data = [
+  {
+    id: 1,
+    number: '123456789',
+    name: 'jb',
+    images: [
+      'https://img0.baidu.com/it/u=2341097482,2639203366&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=1067',
+    ],
+    type: 0, // 0日租，1月租，2购买
+    count: 1,
+    createTime: '2022-01-01',
+    pickTime: '2023-01-01',
+    payment: 100,
+    status: 0, // 0待付款，1待提车，2租赁中，3已完成，4待归还，5已取消
+  },
+  {
+    id: 2,
+    number: '123456789',
+    name: 'nmsl',
+    images: [
+      'https://img0.baidu.com/it/u=2341097482,2639203366&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=1067',
+    ],
+    type: 1, // 0日租，1月租，2购买
+    count: 1,
+    createTime: '2022-01-01',
+    pickTime: '2023-01- 01',
+    payment: 100,
+    status: 1, // 0待付款，1待提车，2租赁中，3已完成，4待归还，5已取消，6全部
+  },
+]
+
+onLoad(() => {
+  // 初始调用api渲染订单
+})
+
+// 计算属性，将status映射为title
+const getStatusTitle = computed(() => (status: number) => {
+  const tab = orderTabs.find((tab) => tab.orderState === status)
+  return tab ? tab.title : ''
+})
+
+//api(通过activeIndex获取对应状态的订单列表)
 </script>
 
 <template>
   <view class="viewport">
-    <view class="search">
-
-    </view>
     <!-- tabs -->
     <view class="tabs">
-      <text
-        class="item"
+      <view
+        class="title-item"
         v-for="(item, index) in orderTabs"
         :key="item.title"
-        @tap="
-          () => {
-            activeIndex = index
-            item.isRender = true
-          }
-        "
+        :class="{ active: index === activeIndex }"
+        @tap="activeIndex = index"
       >
-        {{ item.title }}
-      </text>
-      <!-- 游标 -->
-      <view class="cursor" :style="{ left: activeIndex * 20 + '%' }"></view>
+        <text>{{ item.title }}</text>
+      </view>
     </view>
-    <!-- 滑动容器 -->
-    <swiper class="swiper" :currentnpm="activeIndex" @change="activeIndex = $event.detail.current">
-      <!-- 滑动项 --> ru
-      <swiper-item v-for="item in orderTabs" :key="item.title">
-        <!-- 订单列表 -->
-        <OrderList v-if="item.isRender" :order-state="item.orderState" />
-      </swiper-item>
-    </swiper>
+    <scroll-view class="scroll-view" scroll-y>
+      <view class="order-item" v-for="item in data" :key="item.id">
+        <view class="top">
+          <image :src="item.images[0]" class="image"></image>
+          <view class="content">
+            <view class="content-top">
+              <text class="name">{{ item.name }}</text>
+              <text class="status"> {{ getStatusTitle(item.status) }} </text>
+            </view>
+            <view class="number">单车编号: {{ item.number }}</view>
+            <view class="payment">实付款: {{ item.payment }}币</view>
+          </view>
+        </view>
+        <view class="bottom">
+          <text class="time">{{ item.createTime }}</text>
+          <view class="cancel">取消订单</view>
+          <!-- 跳转到详情页（要传订单id） -->
+          <navigator :url="`/pagesOrder/create/create?id=${item.id}`" class="detail"
+            >去付款</navigator
+          >
+        </view>
+      </view>
+    </scroll-view>
   </view>
 </template>
 
@@ -60,8 +104,8 @@ orderTabs.value[activeIndex.value].isRender = true
 page {
   height: 100%;
   overflow: hidden;
+  background-color: #f7f7f8;
 }
-
 .viewport {
   height: 100%;
   display: flex;
@@ -69,55 +113,77 @@ page {
   background-color: #fff;
 }
 
-.viewport::before{
-  content:"";
-  position: absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:34%;
-  background: linear-gradient(to bottom, rgba(189, 17, 78,0.8), rgba(255, 255, 255, 0));
-  z-index:1;
-  pointer-events: none;
-}
-
-
-// tabs
 .tabs {
+  width: 100%;
   display: flex;
-  justify-content: space-around;
-  line-height: 60rpx;
-  margin: 0 10rpx;
-  position: relative;
-  z-index: 9;
-
-  .item {
-    flex: 1;
-    text-align: center;
-    padding: 10rpx;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  .title-item {
+    color: #000;
     font-size: 25rpx;
-    font-weight: bold;
-    color: #999;
-    border-bottom: 2px solid #fff;
-    transition: all 0.4s;
-    color: #262626;
+    margin: 5rpx 10rpx;
   }
 
-  .cursor {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 20%;
-    height: 6rpx;
-    padding: 0 50rpx;
-    background-color: #cd4d79;
-    /* 过渡效果 */
-    transition: all 0.4s;
+  .title-item.active {
+    font-weight: bold;
+    border-bottom: 5rpx solid #ff9900;
   }
 }
 
-// swiper
-.swiper {
+.order-item {
+  margin: 10rpx 20rpx;
   background-color: #f7f7f8;
+  border-radius: 20rpx;
+  display: flex;
+  flex-direction: column;
+  .content {
+    margin-left: 10rpx;
+    .name {
+      font-size: 30rpx;
+      font-weight: bold;
+      margin-right: 300rpx;
+    }
+  }
+  .image {
+    width: 150rpx;
+    height: 150rpx;
+    border-radius: 10rpx;
+  }
+  .top {
+    display: flex;
+    flex-direction: row;
+    margin: 20rpx 20rpx;
+    .status {
+      font-size: 25rpx;
+      color: #ff9900;
+    }
+    .number{
+      font-size: 25rpx;
+      color: #7f7f7f;
+    }
+    .payment{
+      margin-top: 50rpx;
+      margin-left: 300rpx;
+      font-size: 30rpx;
+      font-weight: bold;
+      color: #000000;
+    }
+
+  }
+  .bottom {
+    display: flex;
+    flex-direction: row;
+    margin: 20rpx 20rpx;
+    .cancel{
+      font-size: 25rpx;
+      color: #7f7f7f;
+      margin-right: 50rpx;
+    }
+    .time{
+      font-size: 25rpx;
+      margin-right: 250rpx;
+    }
+  }
 }
 </style>

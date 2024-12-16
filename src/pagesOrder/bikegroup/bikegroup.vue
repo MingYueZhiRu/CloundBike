@@ -107,7 +107,7 @@ const groups = [
         v-for="item in groups"
         hover-class="none"
         :key="item.id"
-        url="/pagesOrder/bikegroup/groupDetail?id={{item.id}}"
+        :url="`/pagesOrder/bikegroup/groupDetail?id=${item.id}`"
       >
         <view class="content" :style="{ backgroundImage: 'url(' + item.groupImage + ')' }">
           <text class="content-top">

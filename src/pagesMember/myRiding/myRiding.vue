@@ -6,17 +6,19 @@ const options = [
   {type:'3',text: '已结束'},
 ]
 
+//选中的状态类别
 const activeStatus = ref('全部')
 
+// 模拟数据
 const test = [
-  { type:'1', title:'深大侠客行',time:'2024/11/29 8:30am',
+  { id:'1', title:'深大侠客行',time:'2024/11/29 8:30am',
     status:'1天后开始',position:'深圳大学沧海校区东门',picture:'/static/test/test.jpg',
     joins:[
       { userID: '1', userImage: '/static/img/join.png' },
       { userID: '2', userImage: '/static/img/join.png' },
     ],
   },
-  { type:'2', title:'深大侠客行',time:'2024/11/29 8:30am',
+  { id:'2', title:'深大侠客行',time:'2024/11/29 8:30am',
     status:'已结束',position:'深圳大学沧海校区东门',picture:'/static/test/test.jpg',
     joins:[
       { userID: '1', userImage: '/static/img/join.png' },
@@ -58,8 +60,9 @@ const filterTasks = () =>{
     <navigator
       class="list"
       v-for="item in filterTasks()"
-      :key="item.type"
+      :key="item.id"
       :style="{ backgroundImage: 'url(' + item.picture + ')' }"
+      :url="`/pagesOrder/bikegroup/groupDetail?id=`+ item.id"
     >
       <view class="content">
         <text class="content-top">

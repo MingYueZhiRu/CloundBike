@@ -109,21 +109,7 @@
 				{
 					"path": "profile/profile",
 					"style": {
-						"navigationStyle": "custom",
-						"navigationBarTextStyle": "white",
 						"navigationBarTitleText": "个人信息"
-					}
-				},
-				{
-					"path": "address/address",
-					"style": {
-						"navigationBarTitleText": "地址管理"
-					}
-				},
-				{
-					"path": "address-form/address-form",
-					"style": {
-						"navigationBarTitleText": ""
 					}
 				},
 				{
@@ -132,12 +118,12 @@
 						"navigationBarTitleText": "我的骑行"
 					}
 				},
-        {
-          "path": "launchGroup/launchGroup",
-          "style": {
-            "navigationBarTitleText": "发起骑行"
-          }
-        }
+				{
+				  "path": "launchGroup/launchGroup",
+				  "style": {
+					"navigationBarTitleText": "发起骑行"
+				  }
+				}
 			]
 		},
 		{
@@ -147,13 +133,6 @@
 					"path": "create/create",
 					"style": {
 						"navigationBarTitleText": "订单提交"
-					}
-				},
-				{
-					"path": "detail/detail",
-					"style": {
-						"navigationBarTitleText": "订单详情",
-						"navigationStyle": "custom"
 					}
 				},
 				{
@@ -186,12 +165,12 @@
 						"navigationBarTitleText": "骑行团"
 					}
 				},
-        {
-          "path": "bikegroup/groupDetail",
-          "style": {
-            "navigationBarTitleText": "活动详情"
-          }
-        }
+				{
+				  "path": "bikegroup/groupDetail",
+				  "style": {
+					"navigationBarTitleText": "活动详情"
+				  }
+        		}
 			]
 		}
 	],
